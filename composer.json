@@ -2,6 +2,7 @@
   "name": "lawondyss/php-struct",
   "description": "A PHP light implementation of Struct type",
   "type": "library",
+  "license": "MIT",
   "authors": [
     {
       "name": "Ladislav Vondráček",
