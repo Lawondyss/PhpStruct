@@ -1,0 +1,25 @@
+{
+  "name": "lawondyss/php-struct",
+  "description": "A PHP light implementation of Struct type",
+  "type": "library",
+  "authors": [
+    {
+      "name": "Ladislav Vondráček",
+      "email": "lad.von@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.0",
+    "ext-json": "*"
+  },
+  "require-dev": {
+    "tracy/tracy": "2.6.*",
+    "nette/tester": "2.3.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Lawondyss\\PhpStruct\\": "src/"
+    },
+    "files": ["src/exceptions.php"]
+  }
+}
