@@ -162,7 +162,7 @@ abstract class Struct implements \JsonSerializable, \IteratorAggregate
     $rf = new \ReflectionObject($this);
     $doc = $rf->getDocComment();
 
-    $metas = $this->parser->parseDoc($doc);
+    $metas = $this->parser->parseDoc($doc, $rf->getNamespaceName());
     foreach ($metas as $meta) {
       $this->meta[$meta->name] = $meta;
     }
