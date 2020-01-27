@@ -101,8 +101,12 @@ class Helpers
   }
 
 
-  public static function asType($var, string $type)
+  public static function asType($var, string $type, bool $canBeNull)
   {
+    if ($canBeNull && is_null($var)) {
+      return null;
+    }
+
     switch ($type) {
       case Types::BOOL:
       case Types::BOOLEAN:

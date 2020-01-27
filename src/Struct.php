@@ -129,16 +129,15 @@ abstract class Struct implements \JsonSerializable, \IteratorAggregate
     }
 
     if ($meta->isClass && !($value instanceof $meta->type)) {
-      dumpe($meta->type, get_class($value));
       throw new InvalidValueException(sprintf('Property %s::$%s must be instance of "%s"', static::class, $name, $meta->type));
     }
 
     if (!is_array($value) && !$meta->isClass && $meta->type !== Helpers::getType($value)) {
-      $value = Helpers::asType($value, $meta->type);
+      $value = Helpers::asType($value, $meta->type, $meta->isNullable);
 
     } elseif (is_array($value) && $meta->isCollection) {
       foreach ($value as $key => $item) {
-        $typedItem = Helpers::asType($item, $meta->type);
+        $typedItem = Helpers::asType($item, $meta->type, $meta->isNullable);
         if (Helpers::getType($item) !== $meta->type && $item != $typedItem) {
           throw new InvalidValueException(sprintf('All items of %s::$%s must be type of "%s"', static::class, $name, $meta->type));
         }

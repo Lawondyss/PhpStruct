@@ -43,16 +43,24 @@ test(function() {
 });
 
 test(function() {
-  Assert::same(true, Helpers::asType(1, Types::BOOL));
-  Assert::same(true, Helpers::asType(1, Types::BOOLEAN));
-  Assert::same(42, Helpers::asType('42', Types::INT));
-  Assert::same(42, Helpers::asType('42', Types::INTEGER));
-  Assert::same(3.14, Helpers::asType('3.14', Types::NUMBER));
-  Assert::same(3.14, Helpers::asType('3.14', Types::REAL));
-  Assert::same(3.14, Helpers::asType('3.14', Types::DOUBLE));
-  Assert::same(3.14, Helpers::asType('3.14', Types::FLOAT));
-  Assert::same('', Helpers::asType(false, Types::STRING));
-  Assert::same('1', Helpers::asType(true, Types::STRING));
+  Assert::same(true, Helpers::asType(1, Types::BOOL, false));
+  Assert::same(true, Helpers::asType(1, Types::BOOLEAN, false));
+  Assert::same(false, Helpers::asType(null, Types::BOOLEAN, false));
+  Assert::same(null, Helpers::asType(null, Types::BOOLEAN, true));
+  Assert::same(42, Helpers::asType('42', Types::INT, false));
+  Assert::same(42, Helpers::asType('42', Types::INTEGER, false));
+  Assert::same(0, Helpers::asType(null, Types::INTEGER, false));
+  Assert::same(null, Helpers::asType(null, Types::INTEGER, true));
+  Assert::same(3.14, Helpers::asType('3.14', Types::NUMBER, false));
+  Assert::same(3.14, Helpers::asType('3.14', Types::REAL, false));
+  Assert::same(3.14, Helpers::asType('3.14', Types::DOUBLE, false));
+  Assert::same(3.14, Helpers::asType('3.14', Types::FLOAT, false));
+  Assert::same(0.0, Helpers::asType(null, Types::FLOAT, false));
+  Assert::same(null, Helpers::asType(null, Types::FLOAT, true));
+  Assert::same('', Helpers::asType(false, Types::STRING, false));
+  Assert::same('1', Helpers::asType(true, Types::STRING, false));
+  Assert::same('', Helpers::asType(null, Types::STRING, false));
+  Assert::same(null, Helpers::asType(null, Types::STRING, true));
 });
 
 test(function() {
