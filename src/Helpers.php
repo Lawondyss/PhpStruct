@@ -81,7 +81,6 @@ class Helpers
       case Types::INTEGER:
       case Types::STRING:
       case Types::ARRAY:
-      case Types::OBJECT:
       case Types::RESOURCE:
         return $type;
       case 'NULL':
@@ -89,6 +88,8 @@ class Helpers
       case Types::DOUBLE:
       case Types::FLOAT:
         return Types::FLOAT;
+      case Types::OBJECT:
+        return get_class($var);
     }
 
     if (is_callable($var)) {

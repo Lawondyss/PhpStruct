@@ -128,7 +128,7 @@ abstract class Struct implements \JsonSerializable, \IteratorAggregate
       throw new InvalidValueException(sprintf('Property %s::$%s must be collection (array)', static::class, $name));
     }
 
-    if ($meta->isClass && !($value instanceof $meta->type)) {
+    if ($meta->isClass && !$meta->isCollection && isset($value) && !($value instanceof $meta->type)) {
       throw new InvalidValueException(sprintf('Property %s::$%s must be instance of "%s"', static::class, $name, $meta->type));
     }
 
@@ -137,7 +137,7 @@ abstract class Struct implements \JsonSerializable, \IteratorAggregate
 
     } elseif (is_array($value) && $meta->isCollection) {
       foreach ($value as $key => $item) {
-        $typedItem = Helpers::asType($item, $meta->type, $meta->isNullable);
+        $typedItem = $meta->isClass ? $item : Helpers::asType($item, $meta->type, $meta->isNullable);
         if (Helpers::getType($item) !== $meta->type && $item != $typedItem) {
           throw new InvalidValueException(sprintf('All items of %s::$%s must be type of "%s"', static::class, $name, $meta->type));
         }
