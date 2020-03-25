@@ -32,9 +32,9 @@ abstract class Struct implements \JsonSerializable, \IteratorAggregate
     if ($requiredAll && count($diff) > 0) {
       $suffix = count($diff) === 1 ? 'y' : 'ies';
       $diff = array_map(function(string $property) {
-        return static::class . '::$' . $property;
+        return '$' . $property;
       }, $diff);
-      throw new InvalidArgumentException(sprintf('Missing data for propert%s %s', $suffix, implode(', ', $diff)));
+      throw new InvalidArgumentException(sprintf('In class %s missing data for propert%s %s', static::class, $suffix, implode(', ', $diff)));
     }
   }
 
