@@ -124,18 +124,18 @@ abstract class Struct implements \JsonSerializable, \IteratorAggregate
       throw new InvalidValueException(sprintf('Property %s::$%s cannot be NULL', static::class, $name));
     }
 
-    if ($meta->isCollection && !is_array($value)) {
-      throw new InvalidValueException(sprintf('Property %s::$%s must be collection (array)', static::class, $name));
+    if ($meta->isCollection && !is_iterable($value)) {
+      throw new InvalidValueException(sprintf('Property %s::$%s must be collection (iterable)', static::class, $name));
     }
 
     if ($meta->isClass && !$meta->isCollection && isset($value) && !($value instanceof $meta->type)) {
       throw new InvalidValueException(sprintf('Property %s::$%s must be instance of "%s"', static::class, $name, $meta->type));
     }
 
-    if (!is_array($value) && !$meta->isClass && $meta->type !== Helpers::getType($value)) {
+    if (!is_iterable($value) && !$meta->isClass && $meta->type !== Helpers::getType($value)) {
       $value = Helpers::asType($value, $meta->type, $meta->isNullable);
 
-    } elseif (is_array($value) && $meta->isCollection) {
+    } elseif (is_iterable($value) && $meta->isCollection) {
       foreach ($value as $key => $item) {
         $typedItem = $meta->isClass ? $item : Helpers::asType($item, $meta->type, $meta->isNullable);
         if (Helpers::getType($item) !== $meta->type && $item != $typedItem) {
