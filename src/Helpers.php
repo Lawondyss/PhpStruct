@@ -104,7 +104,7 @@ class Helpers
 
   public static function asType($var, string $type, bool $canBeNull)
   {
-    if ($canBeNull && is_null($var)) {
+    if ($canBeNull && (is_null($var) || $var === '')) {
       return null;
     }
 
