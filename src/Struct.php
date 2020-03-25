@@ -39,7 +39,7 @@ abstract class Struct implements \JsonSerializable, \IteratorAggregate
   }
 
 
-  public function __get($name)
+  public function __get(string $name)
   {
     $this->checkPropertyExists($name);
 
@@ -53,7 +53,7 @@ abstract class Struct implements \JsonSerializable, \IteratorAggregate
   }
 
 
-  public function __set($name, $value)
+  public function __set(string $name, $value): void
   {
     $this->checkPropertyExists($name);
 
@@ -65,13 +65,13 @@ abstract class Struct implements \JsonSerializable, \IteratorAggregate
   }
 
 
-  public function __isset($name)
+  public function __isset(string $name): bool
   {
     return array_key_exists($name, $this->meta);
   }
 
 
-  public function __unset($name)
+  public function __unset(string $name): void
   {
     if (array_key_exists($name, $this->meta)) {
       throw new NotExistsException(sprintf('Property %s::$%s not exists', static::class, $name));
@@ -102,19 +102,19 @@ abstract class Struct implements \JsonSerializable, \IteratorAggregate
   }
 
 
-  public function jsonSerialize()
+  public function jsonSerialize(): array
   {
     return static::toArray();
   }
 
 
-  public function getIterator()
+  public function getIterator(): \ArrayIterator
   {
     return new \ArrayIterator(static::toArray());
   }
 
 
-  private function setProperty(string $name, $value)
+  private function setProperty(string $name, $value): void
   {
     $this->checkPropertyExists($name);
 
@@ -149,7 +149,7 @@ abstract class Struct implements \JsonSerializable, \IteratorAggregate
   }
 
 
-  private function checkPropertyExists($name)
+  private function checkPropertyExists(string $name): void
   {
     if (!array_key_exists($name, $this->meta)) {
       throw new NotExistsException(sprintf('Property %s::$%s not exists', static::class, $name));
