@@ -73,9 +73,7 @@ abstract class Struct implements \JsonSerializable, \IteratorAggregate
 
   public function __unset(string $name): void
   {
-    if (array_key_exists($name, $this->meta)) {
-      throw new NotExistsException(sprintf('Property %s::$%s not exists', static::class, $name));
-    }
+    $this->checkPropertyExists($name);
 
     if ($this->meta[$name]->isOnlyRead) {
       throw new AccessException(sprintf('Property %s::$%s is only for read', static::class, $name));
@@ -89,13 +87,17 @@ abstract class Struct implements \JsonSerializable, \IteratorAggregate
   }
 
 
-  public function toArray(): array
+  public function toArray(bool $recursive = true): array
   {
     $arr = [];
 
     /** @var Meta $meta */
     foreach ($this->meta as $name => $meta) {
-      $arr[$name] = $this->{$name};
+      $value = $this->{$name};
+      if ($recursive && $value instanceof self) {
+        $value = $value->toArray($recursive);
+      }
+      $arr[$name] = $value;
     }
 
     return $arr;
