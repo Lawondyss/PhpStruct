@@ -68,7 +68,7 @@ test(function() {
   Assert::same(Types::INTEGER, Helpers::getType(1980));
   Assert::same(Types::STRING, Helpers::getType('Lawondyss'));
   Assert::same(Types::ARRAY, Helpers::getType([]));
-  Assert::same(Types::OBJECT, Helpers::getType(new stdClass));
+  Assert::same('stdClass', Helpers::getType(new stdClass));
   Assert::same(Types::RESOURCE, Helpers::getType(fopen('php://output', 'r')));
   Assert::same(Types::NULL, Helpers::getType(null));
   Assert::same(Types::FLOAT, Helpers::getType(3.14));

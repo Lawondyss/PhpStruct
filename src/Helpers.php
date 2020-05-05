@@ -137,6 +137,16 @@ class Helpers
   }
 
 
+  public static function asClass($var, string $class, bool $canBeNull)
+  {
+    if ($canBeNull && (is_null($var) || $var === '')) {
+      return null;
+    }
+
+    return new $class($var);
+  }
+
+
   public static function isAllowedType(string $type): bool
   {
     if (self::isCollection($type)) {

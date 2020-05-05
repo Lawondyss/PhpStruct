@@ -10,7 +10,7 @@ abstract class Struct implements \JsonSerializable, \IteratorAggregate
   /** @var IParser */
   private $parser;
 
-  /** @var Meta[] */
+  /** @var array<string, Meta> */
   private $meta = [];
 
 
@@ -22,7 +22,7 @@ abstract class Struct implements \JsonSerializable, \IteratorAggregate
 
     $initProperties = [];
     foreach ($properties as $name => $value) {
-      $this->setProperty($name, $value);
+      $this->setProperty($name, $value, true);
       $initProperties[] = $name;
     }
 
@@ -116,7 +116,7 @@ abstract class Struct implements \JsonSerializable, \IteratorAggregate
   }
 
 
-  private function setProperty(string $name, $value): void
+  private function setProperty(string $name, $value, bool $init = false): void
   {
     $this->checkPropertyExists($name);
 
@@ -130,20 +130,21 @@ abstract class Struct implements \JsonSerializable, \IteratorAggregate
       throw new InvalidValueException(sprintf('Property %s::$%s must be collection (iterable)', static::class, $name));
     }
 
-    if ($meta->isClass && !$meta->isCollection && isset($value) && !($value instanceof $meta->type)) {
+    if (!$init && $meta->isClass && !$meta->isCollection && isset($value) && !($value instanceof $meta->type)) {
       throw new InvalidValueException(sprintf('Property %s::$%s must be instance of "%s"', static::class, $name, $meta->type));
     }
 
-    if (!is_iterable($value) && !$meta->isClass && $meta->type !== Helpers::getType($value)) {
-      $value = Helpers::asType($value, $meta->type, $meta->isNullable);
-
-    } elseif (is_iterable($value) && $meta->isCollection) {
+    if (!is_iterable($value)) {
+      $value = $meta->isClass
+        ? Helpers::asClass($value, $meta->type, $meta->isNullable)
+        : Helpers::asType($value, $meta->type, $meta->isNullable);
+    } elseif ($meta->isClass && !$meta->isCollection) {
+      $value = Helpers::asClass($value, $meta->type, $meta->isNullable);
+    } else {
       foreach ($value as $key => $item) {
-        $typedItem = $meta->isClass ? $item : Helpers::asType($item, $meta->type, $meta->isNullable);
-        if (Helpers::getType($item) !== $meta->type && $item != $typedItem) {
-          throw new InvalidValueException(sprintf('All items of %s::$%s must be type of "%s"', static::class, $name, $meta->type));
-        }
-        $value[$key] = $typedItem;
+        $value[$key] = $meta->isClass
+          ? Helpers::asClass($value[$key], $meta->type, $meta->isNullable)
+          : Helpers::asType($value[$key], $meta->type, $meta->isNullable);
       }
     }
 
