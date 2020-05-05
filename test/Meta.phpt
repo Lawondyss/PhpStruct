@@ -25,7 +25,6 @@ test(function() {
   Assert::same(false, $meta->isCollection);
   Assert::same(false, $meta->isNullable);
   Assert::same(false, $meta->isClass);
-  Assert::same(null, $meta->value);
 });
 
 test(function() {
@@ -45,7 +44,6 @@ test(function() {
   Assert::same(false, $meta->isCollection);
   Assert::same(true, $meta->isNullable);
   Assert::same(false, $meta->isClass);
-  Assert::same(null, $meta->value);
 });
 
 test(function() {
@@ -65,5 +63,4 @@ test(function() {
   Assert::same(true, $meta->isCollection);
   Assert::same(false, $meta->isNullable);
   Assert::same(true, $meta->isClass);
-  Assert::same(null, $meta->value);
 });

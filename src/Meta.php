@@ -10,9 +10,6 @@ class Meta
   /** @var string */
   public $name;
 
-  /** @var mixed */
-  public $value;
-
   /** @var string */
   public $type;
 

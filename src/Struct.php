@@ -10,6 +10,9 @@ abstract class Struct implements \JsonSerializable, \IteratorAggregate
   /** @var IParser */
   private $parser;
 
+  /** @var array<string, mixed> */
+  private $values = [];
+
   /** @var array<string, Meta> */
   private $meta = [];
 
@@ -27,7 +30,7 @@ abstract class Struct implements \JsonSerializable, \IteratorAggregate
     }
 
     // find not initiated properties
-    $diff = array_diff(array_keys($this->meta), $initProperties);
+    $diff = array_diff(array_keys($this->values), $initProperties);
 
     if ($requiredAll && count($diff) > 0) {
       $suffix = count($diff) === 1 ? 'y' : 'ies';
@@ -43,13 +46,11 @@ abstract class Struct implements \JsonSerializable, \IteratorAggregate
   {
     $this->checkPropertyExists($name);
 
-    $meta = $this->meta[$name];
-
-    if ($meta->value === null && !$meta->isNullable) {
+    if ($this->values[$name] === null && !$this->meta[$name]->isNullable) {
       throw new InvalidValueException(sprintf('Value of %s::$%s is NULL, but property is not nullable', static::class, $name));
     }
 
-    return $meta->value;
+    return $this->values[$name];
   }
 
 
@@ -67,7 +68,7 @@ abstract class Struct implements \JsonSerializable, \IteratorAggregate
 
   public function __isset(string $name): bool
   {
-    return array_key_exists($name, $this->meta);
+    return array_key_exists($name, $this->values);
   }
 
 
@@ -83,7 +84,7 @@ abstract class Struct implements \JsonSerializable, \IteratorAggregate
       throw new InvalidValueException(sprintf('Property %s::$%s cannot be NULL', static::class, $name));
     }
 
-    $this->meta[$name]->value = null;
+    $this->values[$name] = null;
   }
 
 
@@ -91,8 +92,7 @@ abstract class Struct implements \JsonSerializable, \IteratorAggregate
   {
     $arr = [];
 
-    /** @var Meta $meta */
-    foreach ($this->meta as $name => $meta) {
+    foreach ($this->values as $name => $meta) {
       $value = $this->{$name};
       if ($recursive && $value instanceof self) {
         $value = $value->toArray($recursive);
@@ -148,7 +148,7 @@ abstract class Struct implements \JsonSerializable, \IteratorAggregate
       }
     }
 
-    $meta->value = $value;
+    $this->values[$name] = $value;
   }
 
 
