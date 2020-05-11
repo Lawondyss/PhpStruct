@@ -126,25 +126,28 @@ abstract class Struct implements \JsonSerializable, \IteratorAggregate
       throw new InvalidValueException(sprintf('Property %s::$%s cannot be NULL', static::class, $name));
     }
 
-    if ($meta->isCollection && !is_iterable($value)) {
-      throw new InvalidValueException(sprintf('Property %s::$%s must be collection (iterable)', static::class, $name));
-    }
+    if ($value !== null) {
+      if ($meta->isCollection && !is_iterable($value)) {
+        throw new InvalidValueException(sprintf('Property %s::$%s must be collection (iterable)', static::class, $name));
+      }
 
-    if (!$init && $meta->isClass && !$meta->isCollection && isset($value) && !($value instanceof $meta->type)) {
-      throw new InvalidValueException(sprintf('Property %s::$%s must be instance of "%s"', static::class, $name, $meta->type));
-    }
+      if (!$init && $meta->isClass && !$meta->isCollection && isset($value) && !($value instanceof $meta->type)) {
+        throw new InvalidValueException(sprintf('Property %s::$%s must be instance of "%s"', static::class, $name, $meta->type));
+      }
 
-    if (!is_iterable($value)) {
-      $value = $meta->isClass
-        ? Helpers::asClass($value, $meta->type, $meta->isNullable)
-        : Helpers::asType($value, $meta->type, $meta->isNullable);
-    } elseif ($meta->isClass && !$meta->isCollection) {
-      $value = Helpers::asClass($value, $meta->type, $meta->isNullable);
-    } else {
-      foreach ($value as $key => $item) {
-        $value[$key] = $meta->isClass
-          ? Helpers::asClass($value[$key], $meta->type, $meta->isNullable)
-          : Helpers::asType($value[$key], $meta->type, $meta->isNullable);
+
+      if (!is_iterable($value)) {
+        $value = $meta->isClass
+          ? Helpers::asClass($value, $meta->type, $meta->isNullable)
+          : Helpers::asType($value, $meta->type, $meta->isNullable);
+      } elseif ($meta->isClass && !$meta->isCollection) {
+        $value = Helpers::asClass($value, $meta->type, $meta->isNullable);
+      } else {
+        foreach ($value as $key => $item) {
+          $value[$key] = $meta->isClass
+            ? Helpers::asClass($value[$key], $meta->type, $meta->isNullable)
+            : Helpers::asType($value[$key], $meta->type, $meta->isNullable);
+        }
       }
     }
 
