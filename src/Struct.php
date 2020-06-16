@@ -68,7 +68,9 @@ abstract class Struct implements \JsonSerializable, \IteratorAggregate
 
   public function __isset(string $name): bool
   {
-    return array_key_exists($name, $this->values);
+    $this->checkPropertyExists($name);
+
+    return $this->values[$name] !== null;
   }
 
 
