@@ -12,11 +12,4 @@ interface IParser
    * @return Meta[]
    */
   public function parseDoc(string $docComment): array;
-
-
-  /**
-   * @param string $docType
-   * @return array
-   */
-  public function parseType(string $docType): array;
 }

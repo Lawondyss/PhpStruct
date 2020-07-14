@@ -5,6 +5,8 @@
 
 namespace Lawondyss\PhpStruct;
 
+use Lawondyss\PhpStruct\Exception\AccessException;
+
 abstract class OnlyReadStruct extends Struct
 {
   public function __set(string $name, $value): void

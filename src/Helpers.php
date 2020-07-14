@@ -5,6 +5,9 @@
 
 namespace Lawondyss\PhpStruct;
 
+use Lawondyss\PhpStruct\Exception\InvalidArgumentException;
+use Lawondyss\PhpStruct\Exception\NotSupportedException;
+
 class Helpers
 {
   /** @var array */
@@ -137,10 +140,14 @@ class Helpers
   }
 
 
-  public static function asClass($var, string $class, bool $canBeNull)
+  public static function asClass($var, string $class, bool $canBeNull, IParser $parser = null)
   {
     if ($canBeNull && (is_null($var) || $var === '')) {
       return null;
+    }
+
+    if (is_subclass_of($class, Struct::class)) {
+      return new $class($var, true, $parser);
     }
 
     return new $class($var);

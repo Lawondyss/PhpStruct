@@ -5,7 +5,9 @@
 
 namespace Lawondyss\PhpStruct;
 
-class Parser
+use Lawondyss\PhpStruct\Exception\NotSupportedException;
+
+class Parser implements IParser
 {
   public function parseDoc(string $docComment, string $namespace = null): array
   {

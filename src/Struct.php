@@ -5,6 +5,11 @@
 
 namespace Lawondyss\PhpStruct;
 
+use Lawondyss\PhpStruct\Exception\AccessException;
+use Lawondyss\PhpStruct\Exception\InvalidArgumentException;
+use Lawondyss\PhpStruct\Exception\InvalidValueException;
+use Lawondyss\PhpStruct\Exception\NotExistsException;
+
 abstract class Struct implements \JsonSerializable, \IteratorAggregate
 {
   /** @var IParser */
@@ -139,16 +144,12 @@ abstract class Struct implements \JsonSerializable, \IteratorAggregate
 
 
       if (!is_iterable($value)) {
-        $value = $meta->isClass
-          ? Helpers::asClass($value, $meta->type, $meta->isNullable)
-          : Helpers::asType($value, $meta->type, $meta->isNullable);
+        $value = $this->as($value, $meta);
       } elseif ($meta->isClass && !$meta->isCollection) {
-        $value = Helpers::asClass($value, $meta->type, $meta->isNullable);
+        $value = Helpers::asClass($value, $meta->type, $meta->isNullable, $this->parser);
       } else {
         foreach ($value as $key => $item) {
-          $value[$key] = $meta->isClass
-            ? Helpers::asClass($value[$key], $meta->type, $meta->isNullable)
-            : Helpers::asType($value[$key], $meta->type, $meta->isNullable);
+          $value[$key] = $this->as($item, $meta);
         }
       }
     }
@@ -174,5 +175,13 @@ abstract class Struct implements \JsonSerializable, \IteratorAggregate
     foreach ($metas as $meta) {
       $this->meta[$meta->name] = $meta;
     }
+  }
+
+
+  private function as($value, Meta $meta)
+  {
+    return $meta->isClass
+        ? Helpers::asClass($value, $meta->type, $meta->isNullable, $this->parser)
+        : Helpers::asType($value, $meta->type, $meta->isNullable);
   }
 }
