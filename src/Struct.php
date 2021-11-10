@@ -168,13 +168,18 @@ abstract class Struct implements \JsonSerializable, \IteratorAggregate
 
   private function loadMeta(): void
   {
-    $rf = new \ReflectionObject($this);
-    $doc = $rf->getDocComment();
+    $this->meta = Memoize::load(static::class, function() {
+      $rf = new \ReflectionObject($this);
+      $doc = $rf->getDocComment();
 
-    $metas = $this->parser->parseDoc($doc, $rf->getNamespaceName());
-    foreach ($metas as $meta) {
-      $this->meta[$meta->name] = $meta;
-    }
+      $output = [];
+      $metas = $this->parser->parseDoc($doc, $rf->getNamespaceName());
+      foreach ($metas as $meta) {
+        $output[$meta->name] = $meta;
+      }
+
+      return $output;
+    });
   }
 
 
